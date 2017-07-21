@@ -1,0 +1,117 @@
+<div class="container">
+
+<div ng-if="view =='main'"> 
+  <div class="page-header">
+    <h2>Courses Offered</h2>
+  </div>
+  <hr />
+
+  <div class='row'>
+    <div class='col-sm-8'>
+	<div class="form-group">
+	  <label for="sel">Items/page: {{size}}</label>
+	  <select class="form-control" id="sel" ng-model="size" ng-change="setNew(size)">
+	    <option ng-repeat="n in totalArray() track by $index">{{$index+1}}</option>
+	  </select>
+	</div>
+<br/>
+      <div class="table-wrap">
+        <table class='table table-striped table-bordered table-hover'>
+          <thead class="thead-inverse">
+            <tr>
+              <th class="text-xs-center">Cover</th>
+              <th class="text-xs-center">Title</th>
+              <th class="text-xs-center" align="center">
+              	<a ng-if="userRole == 'ADMIN'" class='btn btn-success' ng-click="loadView('new', 'edit')">Create New</a>
+              </th>
+            </tr>
+          </thead>
+          <tbody ng-repeat='course in courses'>
+            <tr>
+              <td class="text-xs-center" align="center">
+              	<img class="imgTiles" ng-src="{{course.graphic.src}}" alt="{{course.graphic.alt}}"></td>
+              <td>{{ course.title }}</td>
+              <td class="text-xs-center" align="center">
+              	<a ng-if="userRole == 'ADMIN'" class='btn btn-default' ng-click="loadView(course.id, 'edit')">
+              		<span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                <a ng-if="userRole == 'ADMIN'" class='btn btn-default' ng-click='deleteCourse(course.id)'>
+                	<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                <a class='btn btn-default' ng-click="loadView(course.id, 'view')">
+                	<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br /> 
+	  <a class='btn btn-default' ng-disabled="pageNo == 1" ng-click="setPage(pageNo-1)"> << </a>
+	  	<span id="count" class="label label-info">{{pageNo}}/{{totalPage}}</span>
+	  <a class='btn btn-default' ng-disabled="pageNo >= totalPage" ng-click="setPage(pageNo+1)"> >> </a>
+    </div>
+  </div>
+</div>
+<div ng-if="view =='details'"> 
+<div class="page-header">
+    <h2>Course Details</h2>
+  </div>
+  <hr />
+  <div class='row'>
+	<div class='col-sm-3'>
+		<img class="detailImage" alt="{{course.graphic.alt}}" ng-src="{{course.graphic.src}}"> <br />
+		<label ng-if="mode == 'edit'">Image URL: </label><input ng-if="mode == 'edit'" class="form-control" type="text" ng-model="course.graphic.src" required></input>
+		<label ng-if="mode == 'edit'">Image Name: </label><input ng-if="mode == 'edit'" class="form-control" type="text" ng-model="course.graphic.alt" required></input>
+	</div>
+	<div class="col-sm-8">
+	<form ng-submit="saveCourse(course)">
+		<table class='table table-bordered' class="form-group">
+		<tr>
+            <td class="text-xs-center"><label>Title: </label></td>
+            <td><label ng-if="mode == 'view'">{{course.title}}</label>
+            <input ng-if="mode == 'edit'" class="form-control" type="text" ng-model="course.title" required></input></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center"><label>Description: </label></td>
+        	<td><label ng-if="mode == 'view'">{{course.description}}</label>
+        	<textarea ng-if="mode == 'edit'" class="form-control" ng-model="course.description"></textarea></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center"><label>Slug: </label></td>
+        	<td><label ng-if="mode == 'view'">{{course.slug}}</label>
+        	<input ng-if="mode == 'edit'" type="text" class="form-control" ng-model="course.slug" required></input></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center"><label>Course Time: </label></td>
+        	<td><label ng-if="mode == 'view'">{{course.time}} ms</label>
+        	<input ng-if="mode == 'edit'" type="text" class="form-control" ng-model="course.time" required></input></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center"><label>Language: </label></td>
+        	<td><label ng-if="mode == 'view'">{{course.language}}</label>
+        	<input ng-if="mode == 'edit'" type="text" class="form-control" ng-model="course.language" required></input></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center"><label>Skill: </label></td>
+        	<td><label ng-if="mode == 'view'">{{course.skill}}</label>
+        	<input ng-if="mode == 'edit'" type="text" class="form-control" ng-model="course.skill" required></input></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center"><label>Lessons Count: </label></td>
+        	<td><label ng-if="mode == 'view'">{{course.lessons_count}}</label>
+        	<input ng-if="mode == 'edit'" type="text" class="form-control" ng-model="course.lessons_count" required></input></td>
+        </tr>
+        <tr>
+        	<td class="text-xs-center" colspan="2">
+        		<a class='btn btn-primary' ng-click='initialize()'>Back</a>
+        		<button type="submit" class="btn btn-primary">Submit</button>
+        	</td>
+        </tr>
+      </table>
+      </form>
+      <br>
+      <div ng-show="error.length > 1" class="panel panel-default">
+		  <div class="panel-body">
+		    {{error}}
+		  </div>
+	  </div>
+	</div></div>
+</div>
